@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+venv/
+.git/
+.env
+*.env
+.pytest_cache/
+.vscode/
+.idea/
+*.log
+.DS_Store
+kubernetes/
+infrastructure/
+cicd/
+docs/
+*.md

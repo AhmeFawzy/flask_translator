@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>🌐 DevOps Translator Project | 100+ Languages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .rtl-text { direction: rtl; text-align: right; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+        .ltr-text { direction: ltr; text-align: left; }
+        .detected-language {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #667eea;
+        }
+        .detected-language.hidden { display: none; }
+        .correct-lang-btn {
+            background: none; border: none; cursor: pointer;
+            padding: 2px 6px; border-radius: 4px; font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+        .correct-lang-btn:hover { background: rgba(102, 126, 234, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>🌐 DevOps Translator Project</h1>
+                <p class="subtitle">100+ Languages with Auto-Detect</p>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot"></span>
+                <span id="apiStatus">Ready</span>
+            </div>
+        </header>
+
+        <!-- Main Translator -->
+        <main class="translator-main">
+            <div class="translator-grid">
+                <!-- Source Panel -->
+                <div class="panel source-panel">
+                    <div class="panel-header">
+                        <select id="sourceLang" class="lang-select">
+                            <option value="auto">🔍 Auto-Detect</option>
+                            <option value="en" selected>🇬🇧 English</option>
+                            <option value="fr">🇫🇷 French</option>
+                            <option value="de">🇩🇪 German</option>
+                            <option value="ar">🇸🇦 Arabic</option>
+                            <option value="es">🇪🇸 Spanish</option>
+                            <option value="it">🇮🇹 Italian</option>
+                            <option value="pt">🇵🇹 Portuguese</option>
+                            <option value="ru">🇷🇺 Russian</option>
+                            <option value="zh">🇨🇳 Chinese</option>
+                            <option value="ja">🇯🇵 Japanese</option>
+                            <option value="ko">🇰🇷 Korean</option>
+                            <option value="hi">🇮🇳 Hindi</option>
+                            <option value="tr">🇹🇷 Turkish</option>
+                            <option value="nl">🇳🇱 Dutch</option>
+                            <option value="pl">🇵🇱 Polish</option>
+                            <option value="sv">🇸🇪 Swedish</option>
+                            <option value="da">🇩🇰 Danish</option>
+                            <option value="fi">🇫🇮 Finnish</option>
+                            <option value="no">🇳🇴 Norwegian</option>
+                            <option value="cs">🇨🇿 Czech</option>
+                            <option value="el">🇬🇷 Greek</option>
+                            <option value="he">🇮🇱 Hebrew</option>
+                            <option value="th">🇹 Thai</option>
+                            <option value="vi">🇻🇳 Vietnamese</option>
+                            <option value="id">🇮🇩 Indonesian</option>
+                            <option value="ms">🇲🇾 Malay</option>
+                            <option value="uk">🇺🇦 Ukrainian</option>
+                            <option value="ro">🇷🇴 Romanian</option>
+                            <option value="hu">🇭🇺 Hungarian</option>
+                            <option value="fa">🇮🇷 Persian</option>
+                            <option value="ur">🇵🇰 Urdu</option>
+                            <option value="bn">🇧🇩 Bengali</option>
+                            <option value="ta">🇮🇳 Tamil</option>
+                            <option value="sw">🇰🇪 Swahili</option>
+                            <option value="af">🇿🇦 Afrikaans</option>
+                            <option value="sq">🇦🇱 Albanian</option>
+                            <option value="hy">🇦🇲 Armenian</option>
+                            <option value="az">🇦🇿 Azerbaijani</option>
+                            <option value="eu">🇪🇸 Basque</option>
+                            <option value="be">🇧🇾 Belarusian</option>
+                            <option value="bg">🇧🇬 Bulgarian</option>
+                            <option value="ca">🇪🇸 Catalan</option>
+                            <option value="hr">🇭🇷 Croatian</option>
+                            <option value="et">🇪🇪 Estonian</option>
+                            <option value="tl">🇵🇭 Filipino</option>
+                            <option value="gl">🇪🇸 Galician</option>
+                            <option value="ka">🇬🇪 Georgian</option>
+                            <option value="gu">🇮🇳 Gujarati</option>
+                            <option value="ht">🇭🇹 Haitian Creole</option>
+                            <option value="is">🇮🇸 Icelandic</option>
+                            <option value="ga">🇮🇪 Irish</option>
+                            <option value="jw">🇮🇩 Javanese</option>
+                            <option value="kn">🇮🇳 Kannada</option>
+                            <option value="kk">🇰🇿 Kazakh</option>
+                            <option value="km">🇰🇭 Khmer</option>
+                            <option value="ku">🇮🇶 Kurdish</option>
+                            <option value="ky">🇰🇬 Kyrgyz</option>
+                            <option value="lo">🇱🇦 Lao</option>
+                            <option value="la">🏛️ Latin</option>
+                            <option value="lv">🇱🇻 Latvian</option>
+                            <option value="lt">🇱🇹 Lithuanian</option>
+                            <option value="mk">🇲🇰 Macedonian</option>
+                            <option value="mg">🇲🇬 Malagasy</option>
+                            <option value="ml">🇮🇳 Malayalam</option>
+                            <option value="mt">🇲🇹 Maltese</option>
+                            <option value="mi">🇳🇿 Maori</option>
+                            <option value="mr">🇮🇳 Marathi</option>
+                            <option value="mn">🇲🇳 Mongolian</option>
+                            <option value="ne">🇳🇵 Nepali</option>
+                            <option value="ps">🇦🇫 Pashto</option>
+                            <option value="pa">🇮🇳 Punjabi</option>
+                            <option value="sr">🇷🇸 Serbian</option>
+                            <option value="st">🇿🇦 Sesotho</option>
+                            <option value="sn">🇿🇼 Shona</option>
+                            <option value="sd">🇵🇰 Sindhi</option>
+                            <option value="si">🇱🇰 Sinhala</option>
+                            <option value="sk">🇸🇰 Slovak</option>
+                            <option value="sl">🇸🇮 Slovenian</option>
+                            <option value="so">🇸🇴 Somali</option>
+                            <option value="su">🇮🇩 Sundanese</option>
+                            <option value="tg">🇹🇯 Tajik</option>
+                            <option value="te">🇮🇳 Telugu</option>
+                            <option value="tt">🇷🇺 Tatar</option>
+                            <option value="tk">🇹🇲 Turkmen</option>
+                            <option value="ug">🇨🇳 Uyghur</option>
+                            <option value="uz">🇺🇿 Uzbek</option>
+                            <option value="cy">🇬🇧 Welsh</option>
+                            <option value="xh">🇿🇦 Xhosa</option>
+                            <option value="yi">🇮🇱 Yiddish</option>
+                            <option value="yo">🇳🇬 Yoruba</option>
+                            <option value="zu">🇿🇦 Zulu</option>
+                        </select>
+                        <button class="icon-btn" id="copySource" title="Copy text">📋</button>
+                    </div>
+                    <textarea 
+                        id="inputText" 
+                        class="text-area ltr-text" 
+                        placeholder="Enter text to translate..."
+                        spellcheck="true"
+                        lang="en"
+                        dir="ltr"
+                    ></textarea>
+                    <div class="panel-footer">
+                        <span id="charCount">0 / 5000 characters</span>
+                        <button class="clear-btn" id="clearSource">Clear</button>
+                    </div>
+                </div>
+
+                <!-- Action Panel -->
+                <div class="action-panel">
+                    <button class="swap-btn" id="swapLanguages" title="Swap languages">
+                        <span class="swap-icon">⇄</span>
+                    </button>
+                    <button class="translate-btn" id="translateBtn">
+                        <span class="translate-icon">✨</span>
+                        Translate
+                    </button>
+                </div>
+
+                <!-- Target Panel -->
+                <div class="panel target-panel">
+                    <div class="panel-header">
+                        <select id="targetLang" class="lang-select">
+                            <option value="fr" selected>🇫🇷 French</option>
+                            <option value="en">🇬🇧 English</option>
+                            <option value="de">🇩🇪 German</option>
+                            <option value="ar">🇸🇦 Arabic</option>
+                            <option value="es">🇪🇸 Spanish</option>
+                            <option value="it">🇮🇹 Italian</option>
+                            <option value="pt">🇵🇹 Portuguese</option>
+                            <option value="ru">🇷🇺 Russian</option>
+                            <option value="zh">🇨🇳 Chinese</option>
+                            <option value="ja">🇯🇵 Japanese</option>
+                            <option value="ko">🇰🇷 Korean</option>
+                            <option value="hi">🇮🇳 Hindi</option>
+                            <option value="tr">🇹🇷 Turkish</option>
+                            <option value="nl">🇳🇱 Dutch</option>
+                            <option value="pl">🇵🇱 Polish</option>
+                            <option value="sv">🇸🇪 Swedish</option>
+                            <option value="da">🇩🇰 Danish</option>
+                            <option value="fi">🇫🇮 Finnish</option>
+                            <option value="no">🇳🇴 Norwegian</option>
+                            <option value="cs">🇨🇿 Czech</option>
+                            <option value="el">🇬🇷 Greek</option>
+                            <option value="he">🇮🇱 Hebrew</option>
+                            <option value="th">🇹🇭 Thai</option>
+                            <option value="vi">🇻🇳 Vietnamese</option>
+                            <option value="id">🇮🇩 Indonesian</option>
+                            <option value="ms">🇲🇾 Malay</option>
+                            <option value="uk">🇺🇦 Ukrainian</option>
+                            <option value="ro">🇷🇴 Romanian</option>
+                            <option value="hu">🇭🇺 Hungarian</option>
+                            <option value="fa">🇮🇷 Persian</option>
+                            <option value="ur">🇵🇰 Urdu</option>
+                            <option value="bn">🇧🇩 Bengali</option>
+                            <option value="ta">🇮🇳 Tamil</option>
+                            <option value="sw">🇰🇪 Swahili</option>
+                            <option value="af">🇿🇦 Afrikaans</option>
+                            <option value="sq">🇦🇱 Albanian</option>
+                            <option value="hy">🇦🇲 Armenian</option>
+                            <option value="az">🇦🇿 Azerbaijani</option>
+                            <option value="eu">🇪🇸 Basque</option>
+                            <option value="be">🇧🇾 Belarusian</option>
+                            <option value="bg">🇧🇬 Bulgarian</option>
+                            <option value="ca">🇪🇸 Catalan</option>
+                            <option value="hr">🇭🇷 Croatian</option>
+                            <option value="et">🇪🇪 Estonian</option>
+                            <option value="tl">🇵🇭 Filipino</option>
+                            <option value="gl">🇪🇸 Galician</option>
+                            <option value="ka">🇬🇪 Georgian</option>
+                            <option value="gu">🇮🇳 Gujarati</option>
+                            <option value="ht">🇭🇹 Haitian Creole</option>
+                            <option value="is">🇮🇸 Icelandic</option>
+                            <option value="ga">🇮🇪 Irish</option>
+                            <option value="jw">🇮🇩 Javanese</option>
+                            <option value="kn">🇮🇳 Kannada</option>
+                            <option value="kk">🇰🇿 Kazakh</option>
+                            <option value="km">🇰🇭 Khmer</option>
+                            <option value="ku">🇮🇶 Kurdish</option>
+                            <option value="ky">🇰🇬 Kyrgyz</option>
+                            <option value="lo">🇱🇦 Lao</option>
+                            <option value="la">🏛️ Latin</option>
+                            <option value="lv">🇱🇻 Latvian</option>
+                            <option value="lt">🇱🇹 Lithuanian</option>
+                            <option value="mk">🇲🇰 Macedonian</option>
+                            <option value="mg">🇲🇬 Malagasy</option>
+                            <option value="ml">🇮🇳 Malayalam</option>
+                            <option value="mt">🇲🇹 Maltese</option>
+                            <option value="mi">🇳🇿 Maori</option>
+                            <option value="mr">🇮🇳 Marathi</option>
+                            <option value="mn">🇲🇳 Mongolian</option>
+                            <option value="ne">🇳🇵 Nepali</option>
+                            <option value="ps">🇦🇫 Pashto</option>
+                            <option value="pa">🇮🇳 Punjabi</option>
+                            <option value="sr">🇷🇸 Serbian</option>
+                            <option value="st">🇿🇦 Sesotho</option>
+                            <option value="sn">🇿🇼 Shona</option>
+                            <option value="sd">🇵🇰 Sindhi</option>
+                            <option value="si">🇱🇰 Sinhala</option>
+                            <option value="sk">🇸🇰 Slovak</option>
+                            <option value="sl">🇸🇮 Slovenian</option>
+                            <option value="so">🇸🇴 Somali</option>
+                            <option value="su">🇮🇩 Sundanese</option>
+                            <option value="tg">🇹🇯 Tajik</option>
+                            <option value="te">🇮🇳 Telugu</option>
+                            <option value="tt">🇷🇺 Tatar</option>
+                            <option value="tk">🇹🇲 Turkmen</option>
+                            <option value="ug">🇨🇳 Uyghur</option>
+                            <option value="uz">🇺🇿 Uzbek</option>
+                            <option value="cy">🇬🇧 Welsh</option>
+                            <option value="xh">🇿🇦 Xhosa</option>
+                            <option value="yi">🇮🇱 Yiddish</option>
+                            <option value="yo">🇳🇬 Yoruba</option>
+                            <option value="zu">🇿🇦 Zulu</option>
+                        </select>
+                        <button class="icon-btn" id="copyTarget" title="Copy translation">📋</button>
+                    </div>
+                    <textarea 
+                        id="outputText" 
+                        class="text-area output-area ltr-text" 
+                        placeholder="Translation will appear here..."
+                        readonly
+                        lang="fr"
+                        dir="ltr"
+                    ></textarea>
+                    <div class="panel-footer">
+                        <span id="translationTime"></span>
+                        <button class="clear-btn" id="clearTarget">Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detected Language Display -->
+            <div id="detectedLangContainer" class="detected-language hidden">
+                <span class="detected-icon">🔍</span>
+                <span>Detected: </span>
+                <strong id="detectedLangName">English</strong>
+                <button class="correct-lang-btn" id="correctLangBtn" title="Use this language">✏️</button>
+            </div>
+
+            <!-- Feedback Areas -->
+            <div id="loading" class="feedback loading hidden">
+                <div class="spinner"></div>
+                <span>Translating...</span>
+            </div>
+            
+            <div id="error" class="feedback error hidden">
+                <span class="error-icon">⚠️</span>
+                <span id="errorMessage"></span>
+            </div>
+            
+            <div id="success" class="feedback success hidden">
+                <span class="success-icon">✅</span>
+                <span>Translation complete!</span>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Powered by Google Translate • <span id="timestamp"></span></p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
