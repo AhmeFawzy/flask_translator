@@ -115,8 +115,6 @@ application/
 │       └── index.html
 ├── tests/
 │   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_routes.py
 │   └── test_translator.py
 ├── .dockerignore
 ├── .gitignore
@@ -328,7 +326,7 @@ pytest-cov==4.1.0
 
 **Ahmed** - DevOps Engineer
 
-- GitHub: [@flokiboats](https://github.com/flokiboats)
+- GitHub: [@AhmedFawzy](https://github.com/AhmeFawzy)
 - Docker Hub: [flokiboats/translator-app](https://hub.docker.com/r/flokiboats/translator-app)
 
 ---
