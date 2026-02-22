@@ -5,14 +5,12 @@ metadata:
   namespace: translator
   labels:
     app: translator
-  annotations:
-    # Use NLB for better performance (optional)
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
   - port: 80
     targetPort: 5000
+    nodePort: 30007
     protocol: TCP
   selector:
     app: translator
