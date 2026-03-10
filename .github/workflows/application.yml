@@ -11,7 +11,7 @@ on:
       - 'application/**'
 
 env:
-  DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER || 'ahmedfawzy' }}
+  DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER || 'flokibaots' }}
   IMAGE_NAME: translator-app
   SONAR_ORG: ${{ vars.SONAR_ORG || 'your-org' }}
   PYTHON_VERSION: '3.11'
@@ -43,6 +43,7 @@ jobs:
 
       - name: Install dependencies and run tests
         run: |
+          set -e
           pip install -r application/requirements.txt pytest pytest-cov
           pytest application/tests/ -v --cov=application --cov-report=xml
 
@@ -66,7 +67,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image with version tag
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: ./application
@@ -89,13 +90,12 @@ jobs:
         if: github.event_name == 'push'
         run: |
           sed -i "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${{ steps.version.outputs.current_version }}|g" kubernetes/deployment.yaml
-          echo "Updated image to: ${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.current_version }}"
+          echo "✅ Updated deployment.yaml to: ${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.current_version }}"
           grep "image:" kubernetes/deployment.yaml
 
-      - name: Bump version and push
+      - name: Bump version for next build
         if: github.event_name == 'push'
         run: |
-          # Increment patch version (1.0.0 -> 1.0.1)
           CURRENT=${{ steps.version.outputs.current_version }}
           MAJOR=$(echo $CURRENT | cut -d. -f1)
           MINOR=$(echo $CURRENT | cut -d. -f2)
@@ -104,18 +104,15 @@ jobs:
           NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
           
           echo $NEW_VERSION > VERSION
-          echo "Bumped version from $CURRENT to $NEW_VERSION"
-          
-          # Update the manifest with new version for next run
-          sed -i "s|\${IMAGE_TAG}|${NEW_VERSION}|g" kubernetes/deployment.yaml
+          echo "🔄 Bumped version: $CURRENT → $NEW_VERSION"
 
-      - name: Commit and push version bump and manifest changes
+      - name: Commit and push changes
         if: github.event_name == 'push'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add VERSION kubernetes/deployment.yaml
-          git commit -m "chore: bump version to ${{ steps.version.outputs.current_version }}" || echo "No changes to commit"
+          git commit -m "chore: bump version to ${NEW_VERSION}" || echo "No changes to commit"
           git push origin ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
