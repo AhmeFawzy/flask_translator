@@ -1,4 +1,4 @@
-# run.py // comment line for pipeline webhook
+# run.py // comment line for pipeline
 from app.main import create_app
 import os
 
