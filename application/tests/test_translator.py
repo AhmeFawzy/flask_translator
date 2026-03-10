@@ -12,7 +12,7 @@ def test_translate_success(mock_translator_class):
     # Act
     result = translate_text("Hello", "en", "fr")
     
-    # Assert
+    # Assert - your function returns a dict
     assert result['translated_text'] == "Bonjour"
     assert result['source'] == "en"
     assert result['target'] == "fr"
