@@ -13,6 +13,7 @@ on:
 env:
   DOCKERHUB_USER: ${{ vars.DOCKERHUB_USER }}
   IMAGE_NAME: translator-app
+  SONAR_ORG: ${{ vars.SONAR_ORG }}
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -46,6 +47,20 @@ jobs:
           pip install -r application/requirements.txt pytest pytest-cov
           pytest application/tests/ -v --cov=application --cov-report=xml
 
+      - name: SonarQube scan
+        if: false 
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.organization=${{ env.SONAR_ORG }}
+            -Dsonar.projectKey=AhmeFawzy_flask_translator
+            -Dsonar.sources=application
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.branch.name=${{ github.ref_name }}
+        continue-on-error: true
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -77,9 +92,9 @@ jobs:
       - name: Update Kubernetes manifest with new image version
         if: github.event_name == 'push'
         run: |
-          sed -i "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${{ steps.version.outputs.current_version }}|g" kuberenetes/deployment.yaml
+          sed -i "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${{ steps.version.outputs.current_version }}|g" kubernetes/deployment.yaml
           echo "Updated deployment.yaml to: ${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.current_version }}"
-          grep "image:" kuberenetes/deployment.yaml
+          grep "image:" kubernetes/deployment.yaml
 
       - name: Bump version for next build
         if: github.event_name == 'push'
@@ -99,7 +114,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add VERSION kuberenetes/deployment.yaml
+          git add VERSION kubernetes/deployment.yaml
           git commit -m "chore: bump version to ${NEW_VERSION}" || echo "No changes to commit"
           git push origin ${{ github.ref_name }}
         env:
