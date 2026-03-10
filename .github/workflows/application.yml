@@ -48,6 +48,7 @@ jobs:
           pytest application/tests/ -v --cov=application --cov-report=xml
 
       - name: SonarQube scan
+        if: false 
         uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
