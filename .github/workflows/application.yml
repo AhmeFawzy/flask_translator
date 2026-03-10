@@ -55,7 +55,7 @@ jobs:
         with:
           args: >
             -Dsonar.organization=${{ env.SONAR_ORG }}
-            -Dsonar.projectKey=flask_translator
+            -Dsonar.projectKey=AhmeFawzy_flask_translator
             -Dsonar.sources=application
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.branch.name=${{ github.ref_name }}
