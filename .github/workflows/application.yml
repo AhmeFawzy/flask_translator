@@ -57,6 +57,8 @@ jobs:
             -Dsonar.projectKey=flask_translator
             -Dsonar.sources=application
             -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.branch.name=${{ github.ref_name }}
+        continue-on-error: true
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
