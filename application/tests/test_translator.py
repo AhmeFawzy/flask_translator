@@ -1,16 +1,18 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 from app.services.translator import translate_text
 
-@patch("app.services.translator.requests.post")
-def test_translate_success(mock_post):
-
-    mock_post.return_value.status_code = 200
-    mock_post.return_value.json.return_value = {
-        "translation": "Bonjour"
-    }
-
+@patch('app.services.translator.GoogleTranslator')
+def test_translate_success(mock_translator_class):
+    # Arrange
+    mock_instance = Mock()
+    mock_instance.translate.return_value = "Bonjour"
+    mock_translator_class.return_value = mock_instance
+    
+    # Act
     result = translate_text("Hello", "en", "fr")
-
-    assert result == "Bonjour"
-
+    
+    # Assert - your function returns a dict
+    assert result['translated_text'] == "Bonjour"
+    assert result['source'] == "en"
+    assert result['target'] == "fr"

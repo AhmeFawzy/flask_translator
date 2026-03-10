@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: translator
-        image: ${DOCKERHUB_USER}/translator-app:${IMAGE_TAG}
+        image: flokibaots/translator-app:1.0.0
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
