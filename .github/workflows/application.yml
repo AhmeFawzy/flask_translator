@@ -92,7 +92,8 @@ jobs:
       - name: Update Kubernetes manifest with new image version
         if: github.event_name == 'push'
         run: |
-          sed -i "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:.*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${{ steps.version.outputs.current_version }}|g" kuberenetes/deployment.yaml
+          # Use [^[:space:]]* to match only the version tag (non-whitespace)
+          sed -i "s|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:[^[:space:]]*|image: ${DOCKERHUB_USER}/${IMAGE_NAME}:${{ steps.version.outputs.current_version }}|g" kuberenetes/deployment.yaml
           echo "Updated deployment.yaml to: ${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.current_version }}"
           grep "image:" kuberenetes/deployment.yaml
 
