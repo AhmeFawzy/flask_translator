@@ -16,3 +16,4 @@ def test_translate_success(mock_translator_class):
     assert result['translated_text'] == "Bonjour"
     assert result['source'] == "en"
     assert result['target'] == "fr"
+    
