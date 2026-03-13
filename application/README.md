@@ -1,6 +1,6 @@
-```markdown
-# 🌐 Flask Translator App
+# 📁 🌐 Flask Translator App
 
+```markdown
 Flask web app for translating text between 100+ languages.
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
