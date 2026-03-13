@@ -1,5 +1,5 @@
 # ---------------------------------------------------------
-# Terraform Settings & Version Requirements
+# Terraform Settings & AWS Provider
 # ---------------------------------------------------------
 terraform {
   required_version = ">= 1.0"
@@ -11,19 +11,16 @@ terraform {
     }
   }
 
-  # Remote Backend for state management and locking
-  backend "s3" {
-    bucket         = "translator-app-s3-bucket"
-    key            = "project/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-lock-table"
-    encrypt        = true
-  }
+  # Remote backend: S3 + DynamoDB locking
+  #backend "s3" {
+  #  bucket         = "translator-app-tfstate"
+  #  key            = "terraform.tfstate"
+  #  region         = "us-east-1"
+  #  dynamodb_table = "terraform-locks"
+  #  encrypt        = true
+  #}
 }
 
-# ---------------------------------------------------------
-# AWS Provider Configuration
-# ---------------------------------------------------------
 provider "aws" {
   region = "us-east-1"
 }

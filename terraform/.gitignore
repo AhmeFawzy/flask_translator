@@ -1,7 +1,19 @@
-**/.terraform/
-**/.terraform.lock.hcl
+# Terraform
+.terraform/
 *.tfstate
+*.tfstate.*
 *.tfvars
+*.tfvars.json
+*.lock.hcl
+
+# Secrets
 *.pem
 *.key
 *.pub
+!*.pub.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
