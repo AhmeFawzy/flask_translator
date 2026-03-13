@@ -1,5 +1,3 @@
-# 📁 `application/README.md` (Short Version)
-
 ```markdown
 # 🌐 Flask Translator App
 
