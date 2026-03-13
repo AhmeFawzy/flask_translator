@@ -16,6 +16,7 @@ env:
   IMAGE_NAME: translator-app
   SONAR_ORG: ${{ vars.SONAR_ORG }}
   PYTHON_VERSION: '3.11'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # Opt into Node.js 24 early
 
 jobs:
   ci-cd:
@@ -49,7 +50,7 @@ jobs:
           pytest application/tests/ -v --cov=application --cov-report=xml
 
       - name: SonarQube scan
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
@@ -133,6 +134,6 @@ jobs:
           git add VERSION kubernetes/deployment.yaml
           git commit -m "chore: bump version to ${NEW_VERSION}" || echo "No changes to commit"
           
-          git push origin ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }} --force
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
