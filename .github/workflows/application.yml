@@ -94,17 +94,17 @@ jobs:
         run: |
           # Debug: Show current state
           echo "=== Before update ==="
-          cat kuberenetes/deployment.yaml | grep "image:" || echo "No image line found!"
+          cat kubernetes/deployment.yaml | grep "image:" || echo "No image line found!"
           
           # Build new image tag
           NEW_IMAGE="${{ env.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.current_version }}"
           
           # Use perl for reliable replacement (handles quotes, spaces, indentation)
-          perl -i -pe "s|image:\s*[^\n]*|image: ${NEW_IMAGE}|g" kuberenetes/deployment.yaml
+          perl -i -pe "s|image:\s*[^\n]*|image: ${NEW_IMAGE}|g" kubernetes/deployment.yaml
           
           # Debug: Show after state
           echo "=== After update ==="
-          cat kuberenetes/deployment.yaml | grep "image:"
+          cat kubernetes/deployment.yaml | grep "image:"
           
           echo "✅ Updated deployment.yaml to: ${NEW_IMAGE}"
 
@@ -130,7 +130,7 @@ jobs:
           # Pull latest changes to avoid push conflicts in multi-user branch
           git pull --rebase origin ${{ github.ref_name }} 2>/dev/null || true
           
-          git add VERSION kuberenetes/deployment.yaml
+          git add VERSION kubernetes/deployment.yaml
           git commit -m "chore: bump version to ${NEW_VERSION}" || echo "No changes to commit"
           
           git push origin ${{ github.ref_name }}
