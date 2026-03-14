@@ -11,14 +11,18 @@ module "network" {
 
 
 
-
 module "eks" {
   source = "./modules/eks"
 
   cluster_name       = "my-eks-cluster"
   cluster_version    = "1.30"
   vpc_id             = module.network.vpc_id
-  private_subnet_ids = module.network.private_subnet_ids
-  node_instance_type = "t3.medium"
+  
+  private_subnet_ids = module.network.private_subnet_ids 
+  
+  node_instance_type = "t3.micro" 
 }
 
+module "monitoring" {
+  source = "./modules/monitoring"
+}
