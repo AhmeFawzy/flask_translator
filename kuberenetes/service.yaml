@@ -6,11 +6,10 @@ metadata:
   labels:
     app: translator
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 5000
-    nodePort: 30007
     protocol: TCP
   selector:
     app: translator
