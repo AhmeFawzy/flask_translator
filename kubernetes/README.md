@@ -63,23 +63,17 @@ kubectl get svc translator-svc -n translator -o jsonpath='{.status.loadBalancer.
 ### 3️⃣ ArgoCD (GitOps)
 
 ```bash
-# 1. Install ArgoCD (if not installed)
+# 1. Install ArgoCD (one-time)
+kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# 2. Access ArgoCD UI
-kubectl port-forward svc/argocd-server -n argocd 8080:443
-# https://localhost:8080
+# 2. Apply ArgoCD Application manifest
+kubectl apply -f kubernetes/argocd-app.yaml
 
-# 3. Login (default password)
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
-
-# 4. Create Application in ArgoCD UI or CLI:
-# - Repo URL: https://github.com/AhmeFawzy/flask_translator.git
-# - Path: kubernetes/
-# - Namespace: translator
-# - Sync Policy: Automatic
-
-# 5. ArgoCD auto-syncs when manifest changes
+# 3. ArgoCD auto-syncs from now on ✨
+# - Watches `testing` branch
+# - Auto-deploys manifest changes
+# - Self-heals if pods crash
 ```
 
 ---
